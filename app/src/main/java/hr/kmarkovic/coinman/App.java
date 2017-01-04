@@ -3,8 +3,10 @@ package hr.kmarkovic.coinman;
 import android.app.Application;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.List;
 
+import hr.kmarkovic.coinman.interfaces.ApiListener;
 import hr.kmarkovic.coinman.interfaces.HNBservice;
 import hr.kmarkovic.coinman.models.HNBrates;
 import retrofit2.Call;
@@ -22,6 +24,7 @@ public class App extends Application{
     private HNBservice apiService;
     private Retrofit retrofit;
     private List<HNBrates> resultList;
+    private ApiListener apiListener;
 
     @Override
     public void onCreate() {
@@ -35,25 +38,29 @@ public class App extends Application{
         apiService = retrofit.create(HNBservice.class);
     }
 
-    public List<HNBrates> getRatesList() {
+    public void setApiListener(ApiListener apiListener) {
+        this.apiListener = apiListener;
+    }
+
+    public void removeApiListener(){
+        this.apiListener = null;
+    }
+
+    public void getRatesList() {
         apiService.getRates().enqueue(new Callback<List<HNBrates>>() {
             @Override
             public void onResponse(Call<List<HNBrates>> call, Response<List<HNBrates>> response) {
-                resultList = response.body();
+                if (response.isSuccessful()) {
+                    apiListener.onSuccess(response.body());
+                } else {
+                    apiListener.onFailure(response.errorBody().toString());
+                }
             }
 
             @Override
             public void onFailure(Call<List<HNBrates>> call, Throwable t) {
-                Log.i("getRatesList: ", t.getMessage());
+                Log.i("getRatesList", t.getMessage());
             }
         });
-
-        if(resultList != null){
-            return resultList;
-        }
-        else{
-            return null;
-        }
-
     }
 }
