@@ -32,7 +32,9 @@ public class RatesListAdapter extends ArrayAdapter<HNBrates> {
         }
 
         TextView currencyText = (TextView)convertView.findViewById(R.id.text_currency);
+        TextView medianText = (TextView)convertView.findViewById(R.id.text_median);
         currencyText.setText(rate.getCurrencyCode());
+        medianText.setText(rate.getMedianRate());
 
         return convertView;
     }

@@ -1,6 +1,7 @@
 package hr.kmarkovic.coinman;
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.util.Log;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class App extends Application{
     private Retrofit retrofit;
     private List<HNBrates> resultList;
     private ApiListener apiListener;
+    private ProgressDialog pDialog;
 
     @Override
     public void onCreate() {
